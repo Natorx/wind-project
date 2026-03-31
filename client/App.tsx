@@ -1,33 +1,19 @@
-import { JSX, useState } from 'react';
+import { JSX } from 'react';
 import './styles/main.css';
+import { sidebarItems } from './layout/sidebar/fc_sidebar';
+import { useActiveItem } from './context/activeItemContext'; // 新增导入
 import APITest from './components/APITest';
-
-// 侧边栏项目类型
-interface SidebarItem {
-  id: string;
-  label: string;
-  icon?: string;
-}
-
-// 定义侧边栏项目（添加 API 测试）
-const sidebarItems: SidebarItem[] = [
-  { id: 'dashboard', label: '仪表盘', icon: '📊' },
-  { id: 'projects', label: '项目', icon: '📁' },
-  { id: 'analytics', label: '分析', icon: '📈' },
-  { id: 'api-test', label: 'API 测试', icon: '🔧' }, // 新增
-  { id: 'settings', label: '设置', icon: '⚙️' },
-  { id: 'help', label: '帮助', icon: '❓' },
-];
+import Sidebar from './layout/sidebar/sidebar'
 
 function App() {
-  const [activeItem, setActiveItem] = useState<string>('dashboard');
+  const { activeItem } = useActiveItem();
 
   // 右侧内容映射（添加 API 测试）
   const contentMap: Record<string, JSX.Element> = {
     dashboard: <div className="content-card"><h2>仪表盘</h2><p>这里是您的数据概览...</p></div>,
     projects: <div className="content-card"><h2>项目管理</h2><p>查看和管理您的项目...</p></div>,
     analytics: <div className="content-card"><h2>数据分析</h2><p>查看详细的分析报告...</p></div>,
-    'api-test': <APITest />, // 新增
+    'api-test': <APITest />,
     settings: <div className="content-card"><h2>系统设置</h2><p>调整应用设置...</p></div>,
     help: <div className="content-card"><h2>帮助中心</h2><p>获取使用帮助...</p></div>,
   };
@@ -35,38 +21,7 @@ function App() {
   return (
     <div className="app-container">
       {/* 左侧侧边栏 */}
-      <aside className="sidebar">
-        <div className="sidebar-header">
-          <h2 className="logo">Wind Project</h2>
-          <p className="logo-subtitle">简约管理平台</p>
-        </div>
-        
-        <nav className="sidebar-nav">
-          <ul>
-            {sidebarItems.map((item) => (
-              <li key={item.id}>
-                <button
-                  className={`nav-btn ${activeItem === item.id ? 'active' : ''}`}
-                  onClick={() => setActiveItem(item.id)}
-                >
-                  {item.icon && <span className="nav-icon">{item.icon}</span>}
-                  <span className="nav-label">{item.label}</span>
-                </button>
-              </li>
-            ))}
-          </ul>
-        </nav>
-
-        <div className="sidebar-footer">
-          <div className="user-info">
-            <div className="user-avatar">👤</div>
-            <div className="user-details">
-              <p className="user-name">Natorx</p>
-              <p className="user-status">在线</p>
-            </div>
-          </div>
-        </div>
-      </aside>
+      <Sidebar />
 
       {/* 右侧主内容区 */}
       <main className="main-content">
