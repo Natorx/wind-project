@@ -1,11 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { CreateAccountDto } from './dto/create-account.dto';
-import { UpdateAccountDto } from './dto/update-account.dto';
+
+import { PrismaService } from 'prisma/prisma.server';
+import { Account, Prisma } from 'generated/prisma/client';
 
 @Injectable()
 export class AccountsService {
-  create(createAccountDto: CreateAccountDto) {
-    return 'This action adds a new account';
+  constructor(private prisma: PrismaService) {}
+  async create(data: Prisma.AccountCreateInput): Promise<Account> {
+    return this.prisma.account.create({
+      data,
+    });
   }
 
   findAll() {
@@ -14,10 +19,6 @@ export class AccountsService {
 
   findOne(id: number) {
     return `This action returns a #${id} account`;
-  }
-
-  update(id: number, updateAccountDto: UpdateAccountDto) {
-    return `This action updates a #${id} account`;
   }
 
   remove(id: number) {

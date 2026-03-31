@@ -16,3 +16,16 @@
 
 ### UnoCSS的配置
 `pnpm i unocss`，接着在Vite还有main中导入一下就好了
+
+### Prisma的配置
+#### 试错
+1. AI给的方案错误（和最新Prisma的配置方案对不上）
+    AI说要配置env，但是最新版prisma已经不用env了，AI说要删掉prisma.config.ts，但是实际上是需要的
+2. 依赖注入问题
+3. 数据库驱动问题
+4. 版本匹配问题
+#### 成功方案
+1. Nestjs-Prisma官方文档
+`pnpm i prisma pg @prisma/client @prisma/adapter-better-sqlite3 @prisma/adapter-pg`
+`npx prisma generate`：根据prisma.schema生成TS类型和PrismaClient代码
+`npx prisma db push`：把文件给到数据库

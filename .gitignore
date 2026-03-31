@@ -5,7 +5,7 @@ node_modules
 
 # server
 /server/.env
-
+/server/generated/prisma
 # tauri
 /src-tauri/target/
 /src-tauri/gen/schemas
