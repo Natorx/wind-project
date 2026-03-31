@@ -1,5 +1,7 @@
-### git
+### shell
 `git commit -m "msg"` 中的 -m 指的是message，也就是添加提交信息
+`nest generate resource users`
+`nest g resource [module]`
 
 ### React组件通信和状态管理
     想要将一个文件拆开成模块，提高代码可读性，会导致变量不在同一个文件中，无法直接使用的情况，所以需要使用到组件通信。
