@@ -52,6 +52,13 @@ export const sidebarItems: SidebarItem[] = [
     source: 'local' as const,
   },
   {
+    id: 'process-manager',
+    label: '进程调度查看',
+    icon: '📊',
+    order: 7,
+    source: 'local' as const,
+  },
+  {
     id: 'analytics',
     label: '分析',
     icon: '📈',
@@ -105,13 +112,6 @@ export const sidebarItems: SidebarItem[] = [
     label: '路径镜像',
     icon: '📂',
     order: 17,
-    source: 'local' as const,
-  },
-  {
-    id: 'process-manager',
-    label: '进程调度查看',
-    icon: '📊',
-    order: 19,
     source: 'local' as const,
   },
   {

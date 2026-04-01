@@ -8,6 +8,7 @@ import RequestTool from './components/RequestTool';
 import Dashboard from './components/Dashboard';
 import Printer from './components/Printer';
 import DrillGround from './components/DrillGround';
+import SysInfo from './components/SysInfo';
 
 function App() {
   const { activeItem } = useActiveItem();
@@ -56,10 +57,7 @@ function App() {
       </div>
     ),
     hardware: (
-      <div className="content-card">
-        <h2>硬件配置读取</h2>
-        <p>读取系统硬件信息...</p>
-      </div>
+      <div>硬件配置查看</div>
     ),
     'file-explorer': (
       <div className="content-card">
@@ -73,12 +71,7 @@ function App() {
         <p>管理和调用网络设备...</p>
       </div>
     ),
-    'process-manager': (
-      <div className="content-card">
-        <h2>进程调度查看</h2>
-        <p>查看和管理系统进程...</p>
-      </div>
-    ),
+    'process-manager': <SysInfo/>,
     'music-player': (
       <div className="content-card">
         <h2>音乐播放器</h2>

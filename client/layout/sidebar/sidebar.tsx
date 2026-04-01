@@ -10,7 +10,7 @@ const Sidebar: React.FC = () => {
     <aside className="sidebar">
       <div className="sidebar-header">
         <h2 className="logo text-cyan">Wind Project</h2>
-        <p className="logo-subtitle">简约管理平台</p>
+        <p className="logo-subtitle">个人PC助手</p>
       </div>
 
       <nav className="sidebar-nav overflow-y-scroll">
