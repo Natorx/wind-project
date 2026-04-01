@@ -1,35 +1,180 @@
-// 侧边栏项目类型
-interface SidebarItem {
+// 1. 首先，更新 SidebarItem 类型定义，增加 source 字段
+type SidebarItem = {
   id: string;
   label: string;
-  icon?: string;
-}
+  icon: string;
+  order: number;
+  source: 'server' | 'local' | 'others'; // 新增字段
+};
 
+// 2. 在 sidebarItems 数组中为每个项目添加 source 字段，使用类型断言或明确指定类型
 export const sidebarItems: SidebarItem[] = [
-  { id: 'chatbox', label: 'Chatbox Mini', icon: '💬', order: 1 },
-  { id: 'cli', label: '命令行调用', icon: '⌨️', order: 2 },
-  { id: 'api-debug', label: 'API接口调试', icon: '🔍', order: 3 },
-  { id: 'dashboard', label: '仪表盘', icon: '📊', order: 4 },
-  { id: 'printer', label: '本地打印', icon: '📁', order: 5 },
-  { id:'drill-ground',label:'演练场',icon:'🧪',order:6},
-  { id: 'analytics', label: '分析', icon: '📈', order: 12 },
-  { id: 'conversion', label: '文件格式转换', icon: '🔄', order: 8 },
-  { id: 'web-scraper', label: '网页解构', icon: '🕸️', order: 10 },
-  { id: 'encryption', label: '加密算法', icon: '🔐', order: 11 },
-  { id: 'debug', label: '调试环境配置', icon: '🐛', order: 13 },
-  { id: 'docs', label: '层级结构文档', icon: '📄', order: 14 },
-  { id: 'hardware', label: '硬件配置读取', icon: '💻', order: 16 },
-  { id: 'file-explorer', label: '路径镜像', icon: '📂', order: 17 },
-  { id: 'network-devices', label: '网络设备调用', icon: '🌐', order: 18 },
-  { id: 'process-manager', label: '进程调度查看', icon: '📊', order: 19 },
-  { id: 'music-player', label: '音乐播放器', icon: '🎵', order: 20 },
-  { id: 'remote-desktop', label: '桌面远程控制', icon: '🖥️', order: 21 },
-  { id: 'app-launcher', label: '应用管理启动', icon: '🚀', order: 22 },
-  { id: 'email', label: '基础邮件收发', icon: '📧', order: 23 },
-  { id: 'qr-code', label: '二维码生成调用', icon: '📱', order: 24 },
-  { id: 'typing-practice', label: '英语打字练习', icon: '⌨️', order: 25 },
-  { id: 'file-sharing', label: '文件共享', icon: '📤', order: 26 },
-  { id: 'multi-device-login', label: '多设备登录', icon: '🔑', order: 27 },
-  { id: 'plugins', label: '插件扩展', icon: '🧩', order: 28 },
-
+  {
+    id: 'chatbox',
+    label: 'Chatbox Mini',
+    icon: '💬',
+    order: 1,
+    source: 'others' as const,
+  },
+  {
+    id: 'cli',
+    label: '命令行调用',
+    icon: '⌨️',
+    order: 2,
+    source: 'local' as const,
+  },
+  {
+    id: 'api-debug',
+    label: 'API接口调试',
+    icon: '🔍',
+    order: 3,
+    source: 'local' as const,
+  },
+  {
+    id: 'dashboard',
+    label: '仪表盘',
+    icon: '📊',
+    order: 4,
+    source: 'server' as const,
+  },
+  {
+    id: 'printer',
+    label: '本地打印',
+    icon: '📁',
+    order: 5,
+    source: 'local' as const,
+  },
+  {
+    id: 'drill-ground',
+    label: '演练场',
+    icon: '🧪',
+    order: 6,
+    source: 'local' as const,
+  },
+  {
+    id: 'analytics',
+    label: '分析',
+    icon: '📈',
+    order: 12,
+    source: 'server' as const,
+  },
+  {
+    id: 'conversion',
+    label: '文件格式转换',
+    icon: '🔄',
+    order: 8,
+    source: 'local' as const,
+  },
+  {
+    id: 'web-scraper',
+    label: '网页解构',
+    icon: '🕸️',
+    order: 10,
+    source: 'server' as const,
+  },
+  {
+    id: 'encryption',
+    label: '加密算法',
+    icon: '🔐',
+    order: 11,
+    source: 'local' as const,
+  },
+  {
+    id: 'debug',
+    label: '调试环境配置',
+    icon: '🐛',
+    order: 13,
+    source: 'local' as const,
+  },
+  {
+    id: 'docs',
+    label: '层级结构文档',
+    icon: '📄',
+    order: 14,
+    source: 'local' as const,
+  },
+  {
+    id: 'hardware',
+    label: '硬件配置读取',
+    icon: '💻',
+    order: 16,
+    source: 'local' as const,
+  },
+  {
+    id: 'file-explorer',
+    label: '路径镜像',
+    icon: '📂',
+    order: 17,
+    source: 'local' as const,
+  },
+  {
+    id: 'process-manager',
+    label: '进程调度查看',
+    icon: '📊',
+    order: 19,
+    source: 'local' as const,
+  },
+  {
+    id: 'music-player',
+    label: '音乐播放器',
+    icon: '🎵',
+    order: 20,
+    source: 'local' as const,
+  },
+  {
+    id: 'remote-desktop',
+    label: '桌面远程控制',
+    icon: '🖥️',
+    order: 21,
+    source: 'server' as const,
+  },
+  {
+    id: 'app-launcher',
+    label: '应用管理启动',
+    icon: '🚀',
+    order: 22,
+    source: 'local' as const,
+  },
+  {
+    id: 'email',
+    label: '基础邮件收发',
+    icon: '📧',
+    order: 23,
+    source: 'server' as const,
+  },
+  {
+    id: 'qr-code',
+    label: '二维码生成调用',
+    icon: '📱',
+    order: 24,
+    source: 'local' as const,
+  },
+  {
+    id: 'typing-practice',
+    label: '英语打字练习',
+    icon: '⌨️',
+    order: 25,
+    source: 'local' as const,
+  },
+  {
+    id: 'file-sharing',
+    label: '文件共享',
+    icon: '📤',
+    order: 26,
+    source: 'server' as const,
+  },
+  {
+    id: 'multi-device-login',
+    label: '多设备登录',
+    icon: '🔑',
+    order: 27,
+    source: 'server' as const,
+  },
+  {
+    id: 'plugins',
+    label: '插件扩展',
+    icon: '🧩',
+    order: 28,
+    source: 'server' as const,
+  },
 ].sort((a, b) => a.order - b.order);

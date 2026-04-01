@@ -6,15 +6,15 @@
  */
 import { invoke } from '@tauri-apps/api/core';
 import { useEffect, useState } from 'react';
-import { 
-  Plus, 
-  Trash2, 
-  RefreshCw, 
-  UserPlus, 
+import {
+  Plus,
+  Trash2,
+  RefreshCw,
+  UserPlus,
   Users,
   Loader2,
   AlertCircle,
-  CheckCircle
+  CheckCircle,
 } from 'lucide-react';
 
 // 定义用户类型
@@ -39,9 +39,12 @@ const DrillGround: React.FC = () => {
   }>({
     addUser: 'idle',
     deleteUser: 'idle',
-    loadUsers: 'idle'
+    loadUsers: 'idle',
   });
-  const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
+  const [message, setMessage] = useState<{
+    type: 'success' | 'error' | 'info';
+    text: string;
+  } | null>(null);
 
   // 初始化加载诗句
   useEffect(() => {
@@ -61,46 +64,46 @@ const DrillGround: React.FC = () => {
 
   // 添加用户
   const handleAddUser = async () => {
-    setOperationStatus(prev => ({ ...prev, addUser: 'loading' }));
+    setOperationStatus((prev) => ({ ...prev, addUser: 'loading' }));
     try {
       await invoke('add_user', {
         name: 'teabos',
         age: 20,
       });
-      setOperationStatus(prev => ({ ...prev, addUser: 'success' }));
+      setOperationStatus((prev) => ({ ...prev, addUser: 'success' }));
       showMessage('success', '用户添加成功');
       // 自动刷新用户列表
       setTimeout(() => loadUsers(), 500);
     } catch (error) {
       console.error('添加用户失败:', error);
-      setOperationStatus(prev => ({ ...prev, addUser: 'error' }));
+      setOperationStatus((prev) => ({ ...prev, addUser: 'error' }));
       showMessage('error', '添加用户失败');
     } finally {
       setTimeout(() => {
-        setOperationStatus(prev => ({ ...prev, addUser: 'idle' }));
+        setOperationStatus((prev) => ({ ...prev, addUser: 'idle' }));
       }, 2000);
     }
   };
 
   // 加载用户列表
   const loadUsers = async () => {
-    setOperationStatus(prev => ({ ...prev, loadUsers: 'loading' }));
+    setOperationStatus((prev) => ({ ...prev, loadUsers: 'loading' }));
     setLoading(true);
     try {
       const result = await invoke<User[]>('get_users');
       setUsers(result);
-      setOperationStatus(prev => ({ ...prev, loadUsers: 'success' }));
+      setOperationStatus((prev) => ({ ...prev, loadUsers: 'success' }));
       if (result.length === 0) {
         showMessage('info', '暂无用户数据');
       }
     } catch (error) {
       console.error('加载用户失败:', error);
-      setOperationStatus(prev => ({ ...prev, loadUsers: 'error' }));
+      setOperationStatus((prev) => ({ ...prev, loadUsers: 'error' }));
       showMessage('error', '加载用户失败');
     } finally {
       setLoading(false);
       setTimeout(() => {
-        setOperationStatus(prev => ({ ...prev, loadUsers: 'idle' }));
+        setOperationStatus((prev) => ({ ...prev, loadUsers: 'idle' }));
       }, 2000);
     }
   };
@@ -109,20 +112,20 @@ const DrillGround: React.FC = () => {
   const handleDeleteUser = async (id: number, name: string) => {
     if (!confirm(`确定要删除用户 "${name}" 吗？`)) return;
 
-    setOperationStatus(prev => ({ ...prev, deleteUser: 'loading' }));
+    setOperationStatus((prev) => ({ ...prev, deleteUser: 'loading' }));
     try {
       await invoke('delete_user', { id });
-      setOperationStatus(prev => ({ ...prev, deleteUser: 'success' }));
+      setOperationStatus((prev) => ({ ...prev, deleteUser: 'success' }));
       showMessage('success', `用户 "${name}" 删除成功`);
       // 更新本地状态
-      setUsers(prev => prev.filter(user => user.id !== id));
+      setUsers((prev) => prev.filter((user) => user.id !== id));
     } catch (error) {
       console.error('删除用户失败:', error);
-      setOperationStatus(prev => ({ ...prev, deleteUser: 'error' }));
+      setOperationStatus((prev) => ({ ...prev, deleteUser: 'error' }));
       showMessage('error', '删除用户失败');
     } finally {
       setTimeout(() => {
-        setOperationStatus(prev => ({ ...prev, deleteUser: 'idle' }));
+        setOperationStatus((prev) => ({ ...prev, deleteUser: 'idle' }));
       }, 2000);
     }
   };
@@ -142,13 +145,15 @@ const DrillGround: React.FC = () => {
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-6">
       {/* 消息提示 */}
       {message && (
-        <div className={`fixed top-4 right-4 z-50 flex items-center gap-2 px-4 py-3 rounded-lg shadow-lg transition-all duration-300 ${
-          message.type === 'success' 
-            ? 'bg-green-100 text-green-800 border border-green-200' 
-            : message.type === 'error'
-            ? 'bg-red-100 text-red-800 border border-red-200'
-            : 'bg-blue-100 text-blue-800 border border-blue-200'
-        }`}>
+        <div
+          className={`fixed top-4 right-4 z-50 flex items-center gap-2 px-4 py-3 rounded-lg shadow-lg transition-all duration-300 ${
+            message.type === 'success'
+              ? 'bg-green-100 text-green-800 border border-green-200'
+              : message.type === 'error'
+                ? 'bg-red-100 text-red-800 border border-red-200'
+                : 'bg-blue-100 text-blue-800 border border-blue-200'
+          }`}
+        >
           {message.type === 'success' ? (
             <CheckCircle className="w-5 h-5" />
           ) : message.type === 'error' ? (
@@ -177,11 +182,13 @@ const DrillGround: React.FC = () => {
                 onClick={loadPoem}
                 className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors duration-200 flex items-center gap-2"
               >
-                <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+                <RefreshCw
+                  className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`}
+                />
                 刷新诗句
               </button>
             </div>
-            
+
             <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-6 border border-blue-100">
               <div className="text-gray-800 text-lg leading-relaxed whitespace-pre-line font-serif">
                 {poem || '加载中...'}
@@ -213,7 +220,7 @@ const DrillGround: React.FC = () => {
                   )}
                   {isAdding ? '添加中...' : '添加用户'}
                 </button>
-                
+
                 <button
                   onClick={loadUsers}
                   disabled={isLoadingUsers}
@@ -261,8 +268,8 @@ const DrillGround: React.FC = () => {
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
                       {users.map((user) => (
-                        <tr 
-                          key={user.id} 
+                        <tr
+                          key={user.id}
                           className="hover:bg-gray-50 transition-colors duration-150"
                         >
                           <td className="px-6 py-4 whitespace-nowrap">
@@ -280,7 +287,9 @@ const DrillGround: React.FC = () => {
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm">
                             <button
-                              onClick={() => handleDeleteUser(user.id, user.name)}
+                              onClick={() =>
+                                handleDeleteUser(user.id, user.name)
+                              }
                               disabled={isDeleting}
                               className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-lg transition-colors duration-200 ${
                                 isDeleting
@@ -306,8 +315,12 @@ const DrillGround: React.FC = () => {
                   <div className="mx-auto w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
                     <Users className="w-8 h-8 text-gray-400" />
                   </div>
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">暂无用户数据</h3>
-                  <p className="text-gray-500 mb-6">点击"添加用户"按钮创建第一条记录</p>
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">
+                    暂无用户数据
+                  </h3>
+                  <p className="text-gray-500 mb-6">
+                    点击"添加用户"按钮创建第一条记录
+                  </p>
                   <button
                     onClick={handleAddUser}
                     className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-colors duration-200 flex items-center gap-2 mx-auto"
@@ -324,14 +337,22 @@ const DrillGround: React.FC = () => {
               <div className="mt-6 pt-6 border-t border-gray-200">
                 <div className="flex items-center justify-between">
                   <div className="text-sm text-gray-600">
-                    共 <span className="font-semibold text-gray-800">{users.length}</span> 条记录
+                    共{' '}
+                    <span className="font-semibold text-gray-800">
+                      {users.length}
+                    </span>{' '}
+                    条记录
                   </div>
                   <div className="text-sm text-gray-600">
-                    平均年龄: <span className="font-semibold text-gray-800">
-                      {users.length > 0 
-                        ? Math.round(users.reduce((sum, user) => sum + user.age, 0) / users.length)
-                        : 0
-                      } 岁
+                    平均年龄:{' '}
+                    <span className="font-semibold text-gray-800">
+                      {users.length > 0
+                        ? Math.round(
+                            users.reduce((sum, user) => sum + user.age, 0) /
+                              users.length,
+                          )
+                        : 0}{' '}
+                      岁
                     </span>
                   </div>
                 </div>
@@ -346,15 +367,21 @@ const DrillGround: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="p-4 bg-blue-50 rounded-lg">
               <h4 className="font-medium text-blue-700 mb-2">SQLite 集成</h4>
-              <p className="text-sm text-gray-600">使用Rust的rusqlite库实现本地数据库操作</p>
+              <p className="text-sm text-gray-600">
+                使用Rust的rusqlite库实现本地数据库操作
+              </p>
             </div>
             <div className="p-4 bg-green-50 rounded-lg">
               <h4 className="font-medium text-green-700 mb-2">Tauri 通信</h4>
-              <p className="text-sm text-gray-600">通过Tauri命令实现前端与Rust后端的双向通信</p>
+              <p className="text-sm text-gray-600">
+                通过Tauri命令实现前端与Rust后端的双向通信
+              </p>
             </div>
             <div className="p-4 bg-purple-50 rounded-lg">
               <h4 className="font-medium text-purple-700 mb-2">实时操作</h4>
-              <p className="text-sm text-gray-600">支持添加、查询、删除用户，操作后自动刷新数据</p>
+              <p className="text-sm text-gray-600">
+                支持添加、查询、删除用户，操作后自动刷新数据
+              </p>
             </div>
           </div>
         </div>

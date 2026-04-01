@@ -22,7 +22,24 @@ const Sidebar: React.FC = () => {
                 onClick={() => setActiveItem(item.id)}
               >
                 {item.icon && <span className="nav-icon">{item.icon}</span>}
-                <span className="nav-label">{item.label}</span>
+                <div className="flex flex-col items-start">
+                  <span className="nav-label">{item.label}</span>
+                  <span
+                    className={`text-xs mt-0.5 px-1.5 py-0.5 rounded ${
+                      item.source === 'server'
+                        ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
+                        : item.source === 'local'
+                          ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' // 绿色：本地提供
+                          : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200' // 黄色：第三方提供
+                    }`}
+                  >
+                    {item.source === 'server'
+                      ? '服务端提供'
+                      : item.source === 'local'
+                        ? '本地提供'
+                        : '第三方提供'}
+                  </span>
+                </div>
               </button>
             </li>
           ))}

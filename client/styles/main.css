@@ -11,6 +11,13 @@ body {
   color: #334155;
 }
 
+button {
+  border:none;
+}
+input {
+  transition: 150ms;
+}
+
 /* 主容器 */
 .app-container {
   display: flex;
