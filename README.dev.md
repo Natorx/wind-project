@@ -59,3 +59,6 @@ main.rs中主函数中的tauri::Builder就是应用的配置和启动入口
 #### 陌生内容
 - tokio：Rust的异步运行时
 - axum：基于tokio的Web框架(Rust版Express)
+
+### SQLite
+使用Rust调用，为了防止数据监测导致的重启，所以数据暂时放到了别的地方。
