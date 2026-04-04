@@ -1,5 +1,4 @@
-//lib.rs
-
+//src/lib.rs
 
 // 移动平台入口
 #[cfg_attr(mobile, tauri::mobile_entry_point)]

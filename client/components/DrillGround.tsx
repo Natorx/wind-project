@@ -5,7 +5,7 @@
  * @Copyright: Copyright (©)}) 2026 Fofow. All rights reserved.
  */
 import { invoke } from '@tauri-apps/api/core';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
   Plus,
   Trash2,
@@ -29,7 +29,6 @@ type OperationStatus = 'idle' | 'loading' | 'success' | 'error';
 
 const DrillGround: React.FC = () => {
   // 状态管理
-  const [poem, setPoem] = useState<string>('');
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [operationStatus, setOperationStatus] = useState<{
@@ -45,22 +44,6 @@ const DrillGround: React.FC = () => {
     type: 'success' | 'error' | 'info';
     text: string;
   } | null>(null);
-
-  // 初始化加载诗句
-  useEffect(() => {
-    loadPoem();
-  }, []);
-
-  // 加载诗句
-  const loadPoem = async () => {
-    try {
-      const result = await invoke<string>('get_poem');
-      setPoem(result);
-    } catch (error) {
-      console.error('加载诗句失败:', error);
-      showMessage('error', '加载诗句失败');
-    }
-  };
 
   // 添加用户
   const handleAddUser = async () => {
@@ -171,30 +154,6 @@ const DrillGround: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* 左侧：诗句展示 */}
-          <div className="bg-white rounded-xl shadow-lg p-6">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-semibold text-gray-700 flex items-center gap-2">
-                <RefreshCw className="w-5 h-5" />
-                经典诗句
-              </h2>
-              <button
-                onClick={loadPoem}
-                className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors duration-200 flex items-center gap-2"
-              >
-                <RefreshCw
-                  className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`}
-                />
-                刷新诗句
-              </button>
-            </div>
-
-            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-6 border border-blue-100">
-              <div className="text-gray-800 text-lg leading-relaxed whitespace-pre-line font-serif">
-                {poem || '加载中...'}
-              </div>
-            </div>
-          </div>
 
           {/* 右侧：SQLite数据管理 */}
           <div className="bg-white rounded-xl shadow-lg p-6">
