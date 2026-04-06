@@ -58,7 +58,7 @@ export const sidebarItems: SidebarItem[] = [
     order: 7,
     source: 'local' as const,
   },
-    {
+  {
     id: 'typing-practice',
     label: '英语打字练习',
     icon: '⌨️',
@@ -176,5 +176,12 @@ export const sidebarItems: SidebarItem[] = [
     icon: '🧩',
     order: 28,
     source: 'server' as const,
+  },
+  {
+    id: 'test',
+    label: '测试场',
+    icon: '11',
+    order: 99,
+    source: 'local' as const,
   },
 ].sort((a, b) => a.order - b.order);

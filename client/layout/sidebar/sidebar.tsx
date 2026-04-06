@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useActiveItem } from '../../context/activeItemContext'; // 新增
 import { sidebarItems } from './sidebar_config';
 import Drawer from '../../components/Drawer';
+import avatar from '../../mock/pics/avatar.jpg'
 
 const Sidebar: React.FC = () => {
   const { activeItem, setActiveItem } = useActiveItem();
@@ -56,7 +57,7 @@ const Sidebar: React.FC = () => {
           <div className="user-info flex items-center">
             <div className="user-avatar w-9 h-9 bg-gray-200 rounded-full flex items-center justify-center mr-3 overflow-hidden">
               <img
-                src="client/mock/pics/avatar.jpg"
+                src={avatar}
                 alt="用户头像"
                 className="w-full h-full object-cover"
               />
@@ -88,7 +89,7 @@ const Sidebar: React.FC = () => {
           <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
             <div className="w-12 h-12 rounded-full overflow-hidden">
               <img
-                src="client/mock/pics/avatar.jpg"
+                src={avatar}
                 alt="用户头像"
                 className="w-full h-full object-cover"
               />

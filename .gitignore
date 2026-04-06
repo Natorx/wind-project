@@ -9,5 +9,6 @@ node_modules
 # tauri
 /src-tauri/target/
 /src-tauri/gen/schemas
+/src-tauri/gen/android
 # rust-server
 /rust/target/

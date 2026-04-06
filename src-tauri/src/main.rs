@@ -1,5 +1,6 @@
 // src-tauri/src/main.rs
-
+// 在非调试构建时，隐藏 Windows 控制台窗口
+#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 // Commands
 #[path = "mods/commands.rs"]
 mod commands;
@@ -16,6 +17,7 @@ use sysinfo::System;
 #[path = "mods/hardinfo.rs"]
 mod hardinfo;
 use hardinfo::{AppState, get_hardware_info};
+
 
 fn main() {
     tauri::Builder::default()

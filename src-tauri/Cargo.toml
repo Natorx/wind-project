@@ -9,6 +9,10 @@ version = "0.1.0"
 name = "wind-project"
 path = "src/main.rs"
 
+[lib]
+# 这个配置对 Android/iOS 至关重要
+crate-type = ["staticlib", "cdylib", "rlib"]
+
 [build-dependencies]
 tauri-build = {version = "2", features = [] }
 
