@@ -16,7 +16,7 @@ const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({
   fgColor = '#000000',
   bgColor = '#ffffff',
   includeMargin = true,
-  level = 'M'
+  level = 'M',
 }) => {
   const [text, setText] = useState<string>(defaultText);
   const [qrSize, setQrSize] = useState<number>(size);
@@ -192,9 +192,18 @@ const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({
               className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 
                        transition-colors flex items-center"
             >
-              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
-                      d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+              <svg
+                className="w-5 h-5 mr-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                />
               </svg>
               下载PNG
             </button>
@@ -204,9 +213,18 @@ const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({
               className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 
                        transition-colors flex items-center"
             >
-              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
-                      d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+              <svg
+                className="w-5 h-5 mr-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                />
               </svg>
               复制图片
             </button>
@@ -223,7 +241,7 @@ const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({
 
         {/* 右侧：二维码预览 */}
         <div className="flex flex-col items-center justify-center">
-          <div 
+          <div
             ref={qrRef}
             className="p-6 bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700"
           >
@@ -239,19 +257,27 @@ const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({
 
           {/* 二维码信息 */}
           <div className="mt-6 p-4 bg-gray-50 dark:bg-gray-900 rounded-lg w-full">
-            <h3 className="font-medium text-gray-800 dark:text-white mb-2">二维码信息</h3>
+            <h3 className="font-medium text-gray-800 dark:text-white mb-2">
+              二维码信息
+            </h3>
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
-                <span className="text-gray-600 dark:text-gray-400">容错级别</span>
+                <span className="text-gray-600 dark:text-gray-400">
+                  容错级别
+                </span>
                 <span className="font-medium dark:text-white">{level}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600 dark:text-gray-400">尺寸</span>
-                <span className="font-medium dark:text-white">{qrSize} × {qrSize}px</span>
+                <span className="font-medium dark:text-white">
+                  {qrSize} × {qrSize}px
+                </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600 dark:text-gray-400">边距</span>
-                <span className="font-medium dark:text-white">{includeMargin ? '有' : '无'}</span>
+                <span className="font-medium dark:text-white">
+                  {includeMargin ? '有' : '无'}
+                </span>
               </div>
             </div>
           </div>

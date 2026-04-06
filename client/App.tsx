@@ -14,6 +14,7 @@ import Recorder from './pages/Recorder';
 import Heatmap from './pages/Heatmap';
 import { mockData_heatMap } from './mock/heatmap.mock';
 import QRCodeGenerator from './pages/QRCodeGenerator';
+import Charts from './pages/Charts';
 
 function App() {
   const { activeItem } = useActiveItem();
@@ -128,7 +129,8 @@ function App() {
     'drill-ground': <DrillGround />,
     'heatmap': <Heatmap data={mockData_heatMap} />,
     'recorder': <Recorder />,
-    'qrcode':<QRCodeGenerator/>
+    'qrcode':<QRCodeGenerator/>,
+    'charts':<Charts />
   };
 
   return (
