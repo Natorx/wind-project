@@ -1,6 +1,6 @@
 import { useActiveItem } from '../context/activeItemContext.tsx';
 import { sidebarItems } from '../config/sidebar.config.ts';
-import avatar from '../../mock/pics/avatar.jpg';
+import avatar from '../mock/pics/avatar.jpg';
 import { useSettingDrawer } from '../context/drawerSettingContext.tsx';
 
 const Sidebar: React.FC = () => {
@@ -16,7 +16,7 @@ const Sidebar: React.FC = () => {
       </div>
 
       {/* 列表 */}
-      <nav className="sidebar-nav overflow-y-scroll flex-1 py-4 px-3">
+      <nav className="sidebar-nav overflow-y-scroll flex-1 py-4 px-3 scroll-none">
         <ul>
           {sidebarItems.map((item) => (
             <li className="mb-2" key={item.id}>

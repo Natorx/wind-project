@@ -11,7 +11,7 @@ function App() {
       {/* 左侧侧边栏 */}
       <Sidebar />
       {/* 右侧主内容区 */}
-      <main className="main-content flex-1 flex flex-col overflow-y-auto">
+      <main className="main-content scroll-none flex-1 flex flex-col overflow-y-auto">
         <div className="content-wrapper flex-1">
           {contentMap[activeItem] || <div>内容未找到</div>}
         </div>

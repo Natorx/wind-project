@@ -33,6 +33,10 @@ ul {
   font-weight: 500;
 }
 
+.scroll-none::-webkit-scrollbar{
+  display: none;
+}
+
 /* 响应式调整 */
 @media (max-width: 768px) {
   .sidebar {
