@@ -3,7 +3,7 @@ authors = ["you"]
 description = "A Tauri App"
 edition = "2021"
 name = "wind-project"
-version = "0.1.0"
+version = "0.1.4"
 
 [[bin]]
 name = "wind-project"
@@ -29,3 +29,4 @@ tokio = {version = "1", features = ["full"] }
 sysinfo = "0.38.4"
 warp = "0.4.2"
 image = { version = "0.25", default-features = false, features = ["png", "jpeg", "webp"] }
+chrono = "0.4"

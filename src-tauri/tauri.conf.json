@@ -1,7 +1,7 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
   "productName": "Red Wind",
-  "version": "0.1.1",
+  "version": "0.1.4",
   "identifier": "com.administrator.tauri-app",
   "build": {
     "beforeDevCommand": "pnpm dev",
@@ -13,8 +13,8 @@
     "windows": [
       {
         "title": "Red Wind",
-        "width": 1000,
-        "height": 700
+        "width": 1120,
+        "height": 760
       }
     ],
     "security": {

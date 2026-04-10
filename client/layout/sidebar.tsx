@@ -14,7 +14,7 @@ interface SidebarItem {
 const Sidebar: React.FC = () => {
   const { activeItem, setActiveItem } = useActiveItem();
   const [sidebarItems, setSidebarItems] = useState<SidebarItem[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [ _, setLoading] = useState(true);
   const { setIsSettingsOpen } = useSettingDrawer();
     // 加载本地配置
     const loadLocalItems = async () => {

@@ -1,16 +1,22 @@
 // src-tauri/src/main.rs
 // 在非调试构建时，隐藏 Windows 控制台窗口
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
+
 // Commands
 #[path = "mods/commands.rs"]
 mod commands;
 use commands::{execute_shell, get_current_dir, change_dir};
 
-// SQLite
+// SQLite and sidebar
 use rusqlite::Connection;
 #[path = "mods/sqlite.rs"]
 mod sqlite;
 use sqlite::{init_db, DbState, get_sidebar_items, update_sidebar_item, add_sidebar_item, delete_sidebar_item, update_sidebar_items_order};
+
+// Typing
+#[path = "mods/typing.rs"]
+mod typing;
+use typing::{get_custom_word_sets, save_custom_word_set, delete_custom_word_set, update_custom_word_set, get_custom_word_set};
 
 // Hardinfo
 use std::sync::Mutex;
@@ -21,7 +27,7 @@ use hardinfo::{AppState, get_hardware_info};
 
 #[path = "mods/conversion.rs"]
 mod conversion;
-use conversion::{convert_file};
+use conversion::convert_file;
 
 fn main() {
     let db_state = match init_db() {
@@ -34,6 +40,18 @@ fn main() {
             }
         }
     };
+
+    let typing_db_state = match typing::init_typing_database() {
+        Ok(state) => state,
+        Err(e) => {
+            eprintln!("Failed to initialize typing database: {}", e);
+            // 使用内存数据库作为后备
+            let conn = Connection::open_in_memory().unwrap();
+            let _ = typing::init_typing_table(&conn);
+            typing::DbState::new(conn)
+        }
+    };
+
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_fs::init())
@@ -42,6 +60,7 @@ fn main() {
             sys: Mutex::new(System::new_all()),
         })
         .manage(db_state)
+        .manage(typing_db_state)  // 添加 typing_db_state 到管理状态
         .invoke_handler(tauri::generate_handler![
             execute_shell,
             get_current_dir,
@@ -52,7 +71,12 @@ fn main() {
             update_sidebar_item,
             add_sidebar_item,
             delete_sidebar_item,
-            update_sidebar_items_order
+            update_sidebar_items_order,
+            get_custom_word_set,
+            get_custom_word_sets,
+            save_custom_word_set,
+            delete_custom_word_set,
+            update_custom_word_set
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
