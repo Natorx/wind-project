@@ -104,6 +104,7 @@ pub async fn save_custom_word_set(
     if name.trim().is_empty() {
         return Err("词汇集名称不能为空".to_string());
     }
+    println!("保存词汇集 - 名称: {}, 单词: {}", name, words);
     
     // 验证 JSON 格式
     let words_array: Vec<String> = serde_json::from_str(&words)
