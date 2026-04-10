@@ -12,18 +12,18 @@
 - 项目：Git版本控制+monorepo架构
 
 ### 功能
-![alt text](doc/ai.png)
-![alt text](doc/charts.png)
-![alt text](doc/command.png)
-![alt text](doc/conversion.png)
-![alt text](doc/dashboard.png)
-![alt text](doc/drawer.png)
-![alt text](doc/modules.png)
-![alt text](doc/priter.png)
-![alt text](doc/progress.png)
-![alt text](doc/qrcode.png)
-![alt text](doc/recorder.png)
-![alt text](doc/typing.png)
+![alt text](doc/pics/ai.png)
+![alt text](doc/pics/charts.png)
+![alt text](doc/pics/command.png)
+![alt text](doc/pics/conversion.png)
+![alt text](doc/pics/dashboard.png)
+![alt text](doc/pics/drawer.png)
+![alt text](doc/pics/modules.png)
+![alt text](doc/pics/priter.png)
+![alt text](doc/pics/progress.png)
+![alt text](doc/pics/qrcode.png)
+![alt text](doc/pics/recorder.png)
+![alt text](doc/pics/typing.png)
 
 ### 技术方案选择
 #### 应用表现层

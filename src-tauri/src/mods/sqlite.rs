@@ -19,6 +19,7 @@ pub struct DbState {
 
 pub fn init_db() -> Result<DbState> {
     let mut db_path = std::env::temp_dir();
+    println!("数据库路径: {}", db_path.display());
     db_path.push("red-wind-project.db");
     let conn = Connection::open(db_path)?;
     

@@ -30,13 +30,12 @@ impl DbState {
 
 // 初始化打字练习数据库
 pub fn init_typing_database() -> Result<DbState, String> {
-    // Tauri v2 使用 app_handle 来获取路径
-    // 由于在 main 函数中调用，我们需要使用不同的方法
     let app_dir = get_app_data_dir();
-    
     std::fs::create_dir_all(&app_dir).map_err(|e| e.to_string())?;
-    
     let db_path = app_dir.join("typing_practice.db");
+    // 打印完整数据库路径
+    println!("数据库路径: {}", db_path.display());
+
     let conn = Connection::open(db_path).map_err(|e| e.to_string())?;
     
     init_typing_table(&conn).map_err(|e| e.to_string())?;

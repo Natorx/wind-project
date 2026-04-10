@@ -13,18 +13,19 @@ use rusqlite::Connection;
 mod sqlite;
 use sqlite::{init_db, DbState, get_sidebar_items, update_sidebar_item, add_sidebar_item, delete_sidebar_item, update_sidebar_items_order};
 
-// Typing
+// 英语练习模块
 #[path = "mods/typing.rs"]
 mod typing;
 use typing::{get_custom_word_sets, save_custom_word_set, delete_custom_word_set, update_custom_word_set, get_custom_word_set};
 
-// Hardinfo
+// 硬件信息模块
 use std::sync::Mutex;
 use sysinfo::System;
 #[path = "mods/hardinfo.rs"]
 mod hardinfo;
 use hardinfo::{AppState, get_hardware_info};
 
+// 文件转换模块
 #[path = "mods/conversion.rs"]
 mod conversion;
 use conversion::convert_file;
