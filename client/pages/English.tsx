@@ -1,83 +1,24 @@
 // TypingPractice.tsx
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { invoke } from '@tauri-apps/api/core';
-
-// 类型定义
-interface WordSet {
-  id: number;
-  name: string;
-  words: string[];
-  isOfficial: boolean;
-  createdAt: string;
-}
-
-// 后端返回的原始数据结构
-interface RawWordSet {
-  id: number;
-  name: string;
-  words: string;
-  is_official: boolean;
-  created_at: string;
-}
-
-interface TypingStats {
-  wpm: number;
-  accuracy: number;
-  correctChars: number;
-  incorrectChars: number;
-  totalChars: number;
-  startTime: number | null;
-  endTime: number | null;
-}
-
-interface HistoryItem {
-  word: string;
-  correct: boolean;
-  time: number;
-}
-
-// 官方词汇集 1 - 基础词汇
-const OFFICIAL_WORD_SET_1: WordSet = {
-  id: 1,
-  name: "基础词汇 (50词)",
-  words: [
-    'apple', 'beautiful', 'computer', 'developer', 'experience',
-    'fantastic', 'github', 'hello', 'internet', 'javascript',
-    'knowledge', 'learning', 'mountain', 'network', 'open source',
-    'programming', 'quality', 'react', 'software', 'technology',
-    'unique', 'virtual', 'website', 'xenial', 'youtube',
-    'zealous', 'algorithm', 'backend', 'cloud', 'database',
-    'frontend', 'git', 'html', 'css', 'typescript',
-    'python', 'java', 'rust', 'go', 'swift',
-    'kotlin', 'ruby', 'php', 'docker', 'kubernetes',
-    'aws', 'azure', 'mongodb', 'postgresql', 'redis'
-  ],
-  isOfficial: true,
-  createdAt: new Date().toISOString()
-};
-
-// 官方词汇集 2 - 编程术语
-const OFFICIAL_WORD_SET_2: WordSet = {
-  id: 2,
-  name: "编程术语 (40词)",
-  words: [
-    'asynchronous', 'callback', 'closure', 'compiler', 'dependency',
-    'encapsulation', 'framework', 'functional', 'generics', 'immutable',
-    'inheritance', 'interface', 'lambda', 'middleware', 'namespace',
-    'optimization', 'polymorphism', 'queue', 'recursion', 'singleton',
-    'thread', 'variable', 'webpack', 'xml', 'yaml',
-    'zero', 'boolean', 'constant', 'debugger', 'event loop',
-    'factory', 'garbage', 'hoisting', 'iterator', 'json',
-    'keyword', 'lexical', 'memoization', 'nullable', 'object'
-  ],
-  isOfficial: true,
-  createdAt: new Date().toISOString()
-};
+import {
+  HistoryItem,
+  RawWordSet,
+  TypingStats,
+  WordSet,
+} from '../interface/typing.interface';
+import {
+  OFFICIAL_WORD_SET_1,
+  OFFICIAL_WORD_SET_2,
+} from '../config/typig.config';
 
 const TypingPractice: React.FC = () => {
   // 状态管理
-  const [wordSets, setWordSets] = useState<WordSet[]>([OFFICIAL_WORD_SET_1, OFFICIAL_WORD_SET_2]);
-  const [currentSetId, setCurrentSetId] = useState<number>(1);
+  const [wordSets, setWordSets] = useState<WordSet[]>([
+    OFFICIAL_WORD_SET_1,
+    OFFICIAL_WORD_SET_2,
+  ]);
+  const [currentSetId, setCurrentSetId] = useState<number>(-2);
   const [currentWord, setCurrentWord] = useState<string>('');
   const [userInput, setUserInput] = useState<string>('');
   const [completedWords, setCompletedWords] = useState<string[]>([]);
@@ -96,14 +37,17 @@ const TypingPractice: React.FC = () => {
   const [showCustomModal, setShowCustomModal] = useState<boolean>(false);
   const [newSetName, setNewSetName] = useState<string>('');
   const [newSetWords, setNewSetWords] = useState<string>('');
-  const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const [message, setMessage] = useState<{
+    type: 'success' | 'error';
+    text: string;
+  } | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const inputRef = useRef<HTMLInputElement>(null);
   const startTimeRef = useRef<number | null>(null);
 
   // 获取当前词汇集
-  const currentWordSet = wordSets.find(set => set.id === currentSetId);
+  const currentWordSet = wordSets.find((set) => set.id === currentSetId);
 
   // 显示消息
   const showMessage = (type: 'success' | 'error', text: string) => {
@@ -115,45 +59,38 @@ const TypingPractice: React.FC = () => {
   const loadCustomWordSets = async () => {
     try {
       setIsLoading(true);
-      console.log('开始加载自定义词汇集...');
-      
       const customSets = await invoke<RawWordSet[]>('get_custom_word_sets');
-      console.log('从数据库加载的原始数据:', customSets);
-      
       if (customSets && Array.isArray(customSets) && customSets.length > 0) {
         // 将后端的 words 字符串解析为数组
         const parsedSets: WordSet[] = customSets
-          .filter((set): set is RawWordSet => set != null && typeof set.id === 'number')
+          .filter(
+            (set): set is RawWordSet =>
+              set != null && typeof set.id === 'number',
+          )
           .map((set) => {
             try {
               const parsedWords = JSON.parse(set.words);
-              console.log(`解析词汇集 ${set.name}:`, parsedWords);
               return {
                 id: set.id,
                 name: set.name,
                 words: Array.isArray(parsedWords) ? parsedWords : [],
                 isOfficial: false,
-                createdAt: set.created_at || new Date().toISOString()
+                createdAt: set.created_at || new Date().toISOString(),
               };
             } catch (parseError) {
-              console.error(`解析词汇集 ${set.name} 失败:`, parseError);
               return {
                 id: set.id,
                 name: set.name,
                 words: [],
                 isOfficial: false,
-                createdAt: set.created_at || new Date().toISOString()
+                createdAt: set.created_at || new Date().toISOString(),
               };
             }
           });
-        
-        console.log('解析后的词汇集:', parsedSets);
         setWordSets([OFFICIAL_WORD_SET_1, OFFICIAL_WORD_SET_2, ...parsedSets]);
       } else {
-        console.log('没有找到自定义词汇集');
       }
     } catch (error) {
-      console.error('加载自定义词汇集失败:', error);
       showMessage('error', '加载自定义词汇集失败: ' + error);
     } finally {
       setIsLoading(false);
@@ -161,40 +98,36 @@ const TypingPractice: React.FC = () => {
   };
 
   // 保存自定义词汇集到数据库
-  const saveCustomWordSet = async (name: string, words: string[]): Promise<WordSet> => {
-    console.log('保存词汇集:', name, words);
-    
+  const saveCustomWordSet = async (
+    name: string,
+    words: string[],
+  ): Promise<WordSet> => {
     const newSet = await invoke<RawWordSet>('save_custom_word_set', {
       name,
-      words: JSON.stringify(words)
+      words: JSON.stringify(words),
     });
-    
-    console.log('保存成功，返回数据:', newSet);
-    
+
     // 返回的数据需要解析 words
     return {
       id: newSet.id,
       name: newSet.name,
       words: JSON.parse(newSet.words),
       isOfficial: false,
-      createdAt: newSet.created_at || new Date().toISOString()
+      createdAt: newSet.created_at || new Date().toISOString(),
     };
   };
 
   // 删除自定义词汇集
   const deleteCustomWordSet = async (id: number) => {
     try {
-      console.log('删除词汇集:', id);
-      
       await invoke('delete_custom_word_set', { id });
-      
-      setWordSets(prevSets => prevSets.filter(set => set.id !== id));
+
+      setWordSets((prevSets) => prevSets.filter((set) => set.id !== id));
       if (currentSetId === id) {
-        setCurrentSetId(1);
+        setCurrentSetId(-2);
       }
       showMessage('success', '词汇集删除成功！');
     } catch (error) {
-      console.error('删除词汇集失败:', error);
       showMessage('error', '删除失败，请重试');
     }
   };
@@ -217,47 +150,61 @@ const TypingPractice: React.FC = () => {
     startTimeRef.current = null;
   }, []);
 
-  // 初始化词汇集
-  const initializeWordSet = useCallback((setId: number) => {
-    const selectedSet = wordSets.find(set => set.id === setId);
-    if (selectedSet && selectedSet.words.length > 0) {
-      console.log('初始化词汇集:', selectedSet.name, selectedSet.words);
-      setRemainingWords([...selectedSet.words]);
-      // 随机选择一个初始单词
-      const randomIndex = Math.floor(Math.random() * selectedSet.words.length);
-      setCurrentWord(selectedSet.words[randomIndex]);
+  // 打乱数组
+  const shuffleArray = <T,>(array: T[]): T[] => {
+    const shuffled = [...array];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
     }
-  }, [wordSets]);
+    return shuffled;
+  };
 
-  // 获取新单词
-  const getNewWord = useCallback(() => {
-    if (!currentWordSet) return;
-    
-    const notCompleted = remainingWords.filter(word => !completedWords.includes(word));
-    
-    if (notCompleted.length === 0) {
-      setIsActive(false);
-      if (startTimeRef.current) {
-        const endTime = Date.now();
-        const timeInMinutes = (endTime - startTimeRef.current) / 60000;
-        const wpm = Math.round(stats.correctChars / 5 / timeInMinutes);
-        setStats((prev) => ({
-          ...prev,
-          wpm: wpm || 0,
-          endTime: endTime,
-        }));
+  // 初始化词汇集
+  const initializeWordSet = useCallback(
+    (setId: number) => {
+      const selectedSet = wordSets.find((set) => set.id === setId);
+      if (selectedSet && selectedSet.words.length > 0) {
+        // 打乱单词顺序，确保随机性
+        const shuffledWords = shuffleArray(selectedSet.words);
+        setRemainingWords(shuffledWords.slice(1)); // 剩余单词（除第一个外）
+        setCompletedWords([]);
+        
+        // 设置第一个单词
+        setCurrentWord(shuffledWords[0]);
       }
-      return;
+    },
+    [wordSets],
+  );
+
+  // 获取下一个单词
+  const getNextWord = useCallback(() => {
+    // 如果还有剩余单词
+    if (remainingWords.length > 0) {
+      // 取出下一个单词（从剩余单词中取第一个）
+      const nextWord = remainingWords[0];
+      // 更新剩余单词（移除第一个）
+      setRemainingWords(prev => prev.slice(1));
+      return nextWord;
     }
     
-    const randomIndex = Math.floor(Math.random() * notCompleted.length);
-    setCurrentWord(notCompleted[randomIndex]);
-  }, [remainingWords, completedWords, currentWordSet, stats.correctChars]);
+    // 没有剩余单词了，完成所有单词
+    setIsActive(false);
+    if (startTimeRef.current) {
+      const endTime = Date.now();
+      const timeInMinutes = (endTime - startTimeRef.current) / 60000;
+      const wpm = Math.round(stats.correctChars / 5 / timeInMinutes);
+      setStats((prev) => ({
+        ...prev,
+        wpm: wpm || 0,
+        endTime: endTime,
+      }));
+    }
+    return null;
+  }, [remainingWords, stats.correctChars]);
 
   // 切换词汇集
   const switchWordSet = (setId: number) => {
-    console.log('切换词汇集:', setId);
-    
     if (isActive) {
       if (window.confirm('切换词汇集会重置当前进度，确定要继续吗？')) {
         resetGameState();
@@ -286,31 +233,6 @@ const TypingPractice: React.FC = () => {
     }
   };
 
-  // 更新实时统计
-  const updateStats = (input: string, currentWordText: string) => {
-    let correct = 0;
-    let incorrect = 0;
-
-    for (let i = 0; i < input.length; i++) {
-      if (i < currentWordText.length && input[i] === currentWordText[i]) {
-        correct++;
-      } else {
-        incorrect++;
-      }
-    }
-
-    const totalChars = correct + incorrect;
-    const accuracy = totalChars > 0 ? (correct / totalChars) * 100 : 100;
-
-    setStats((prev) => ({
-      ...prev,
-      correctChars: correct,
-      incorrectChars: incorrect,
-      totalChars: totalChars,
-      accuracy: accuracy,
-    }));
-  };
-
   // 处理输入变化
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -323,11 +245,11 @@ const TypingPractice: React.FC = () => {
       startTimeRef.current = startTime;
     }
 
-    updateStats(value, currentWord);
-
+    // 检查是否完成当前单词
     if (value.toLowerCase() === currentWord.toLowerCase()) {
       const wordTime = Date.now();
-      
+
+      // 记录历史
       setHistory((prev) => [
         ...prev,
         {
@@ -337,9 +259,19 @@ const TypingPractice: React.FC = () => {
         },
       ]);
 
+      // 将当前单词添加到已完成列表
       setCompletedWords((prev) => [...prev, currentWord]);
-      setUserInput('');
-      getNewWord();
+
+      // 获取下一个单词
+      const nextWord = getNextWord();
+
+      if (nextWord) {
+        setCurrentWord(nextWord);
+        setUserInput('');
+      } else {
+        // 所有单词完成，清空输入
+        setUserInput('');
+      }
     }
   };
 
@@ -349,26 +281,25 @@ const TypingPractice: React.FC = () => {
       showMessage('error', '请输入词汇集名称');
       return;
     }
-    
+
     const wordsArray = newSetWords
       .split(/[,\n]/)
-      .map(w => w.trim().toLowerCase())
-      .filter(w => w.length > 0);
-    
+      .map((w) => w.trim().toLowerCase())
+      .filter((w) => w.length > 0);
+
     if (wordsArray.length === 0) {
       showMessage('error', '至少添加一个单词');
       return;
     }
-    
+
     try {
       const newSet = await saveCustomWordSet(newSetName, wordsArray);
-      setWordSets(prev => [...prev, newSet]);
+      setWordSets((prev) => [...prev, newSet]);
       setShowCustomModal(false);
       setNewSetName('');
       setNewSetWords('');
       showMessage('success', '词汇集添加成功！');
     } catch (error) {
-      console.error('添加自定义词汇集失败:', error);
       showMessage('error', '添加失败: ' + error);
     }
   };
@@ -384,31 +315,16 @@ const TypingPractice: React.FC = () => {
 
   // 当前词汇集变化时重新初始化
   useEffect(() => {
-    if (!isLoading && currentWordSet) {
-      console.log('当前词汇集变化:', currentWordSet.name);
+    if (!isLoading && currentWordSet && currentSetId !== -2) {
       initializeWordSet(currentSetId);
       inputRef.current?.focus();
     }
-  }, [currentSetId, isLoading, initializeWordSet]);
-
-  // 计算 WPM
-  useEffect(() => {
-    if (stats.startTime && isActive) {
-      const interval = setInterval(() => {
-        const now = Date.now();
-        const timeInMinutes = (now - stats.startTime!) / 60000;
-        const wpm = Math.round(stats.correctChars / 5 / timeInMinutes);
-        setStats((prev) => ({ ...prev, wpm: wpm || 0 }));
-      }, 1000);
-      
-      return () => clearInterval(interval);
-    }
-  }, [stats.correctChars, stats.startTime, isActive]);
+  }, [currentSetId, isLoading, initializeWordSet, currentWordSet]);
 
   // 高亮显示输入对比
   const renderWordWithHighlight = () => {
     if (!currentWord) return null;
-    
+
     return currentWord.split('').map((char, index) => {
       let color = 'text-gray-400';
       if (index < userInput.length) {
@@ -445,9 +361,11 @@ const TypingPractice: React.FC = () => {
 
         {/* 消息提示 */}
         {message && (
-          <div className={`fixed top-4 right-4 z-50 px-6 py-3 rounded-lg shadow-lg ${
-            message.type === 'success' ? 'bg-green-500' : 'bg-red-500'
-          } text-white animate-fade-in`}>
+          <div
+            className={`fixed top-4 right-4 z-50 px-6 py-3 rounded-lg shadow-lg ${
+              message.type === 'success' ? 'bg-green-500' : 'bg-red-500'
+            } text-white animate-fade-in`}
+          >
             {message.text}
           </div>
         )}
@@ -455,7 +373,9 @@ const TypingPractice: React.FC = () => {
         {/* 词汇集选择器 */}
         <div className="mb-6">
           <div className="flex justify-between items-center mb-3">
-            <label className="text-sm font-semibold text-gray-700">选择词汇集</label>
+            <label className="text-sm font-semibold text-gray-700">
+              选择词汇集
+            </label>
             <button
               onClick={() => setShowCustomModal(true)}
               className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
@@ -476,11 +396,17 @@ const TypingPractice: React.FC = () => {
                 >
                   <div className="flex justify-between items-center">
                     <div className="text-left">
-                      <div className="font-semibold text-gray-800">{set.name}</div>
-                      <div className="text-xs text-gray-500">{set.words.length} 个单词</div>
+                      <div className="font-semibold text-gray-800">
+                        {set.name}
+                      </div>
+                      <div className="text-xs text-gray-500">
+                        {set.words.length} 个单词
+                      </div>
                     </div>
                     {set.isOfficial && (
-                      <span className="text-xs bg-gray-200 px-2 py-1 rounded">官方</span>
+                      <span className="text-xs bg-gray-200 px-2 py-1 rounded">
+                        官方
+                      </span>
                     )}
                   </div>
                 </button>
@@ -507,32 +433,17 @@ const TypingPractice: React.FC = () => {
           <div className="flex justify-between text-sm text-gray-600 mb-2">
             <span>进度</span>
             <span>
-              {completedWords.length} / {currentWordSet?.words.length || 0} 个单词
+              {completedWords.length} / {currentWordSet?.words.length || 0}{' '}
+              个单词
             </span>
           </div>
           <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
             <div
               className="bg-gradient-to-r from-blue-600 to-purple-600 h-2 rounded-full transition-all duration-300"
               style={{
-                width: `${((completedWords.length) / (currentWordSet?.words.length || 1)) * 100}%`,
+                width: `${(completedWords.length / (currentWordSet?.words.length || 1)) * 100}%`,
               }}
             />
-          </div>
-        </div>
-
-        {/* 统计面板 */}
-        <div className="grid grid-cols-3 gap-4 mb-6">
-          <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-4 text-center">
-            <div className="text-2xl font-bold text-blue-600">{stats.wpm}</div>
-            <div className="text-xs text-gray-600">WPM</div>
-          </div>
-          <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-4 text-center">
-            <div className="text-2xl font-bold text-green-600">{Math.round(stats.accuracy)}%</div>
-            <div className="text-xs text-gray-600">准确率</div>
-          </div>
-          <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-4 text-center">
-            <div className="text-2xl font-bold text-purple-600">{completedWords.length}</div>
-            <div className="text-xs text-gray-600">已完成</div>
           </div>
         </div>
 
@@ -556,7 +467,9 @@ const TypingPractice: React.FC = () => {
               type="text"
               value={userInput}
               onChange={handleInputChange}
-              disabled={completedWords.length === (currentWordSet?.words.length || 0)}
+              disabled={
+                completedWords.length === (currentWordSet?.words.length || 0)
+              }
               placeholder={
                 completedWords.length === 0
                   ? '点击这里开始打字...'
@@ -578,7 +491,10 @@ const TypingPractice: React.FC = () => {
               </div>
             ) : (
               <div>
-                按 <kbd className="px-2 py-1 bg-gray-200 rounded text-sm font-mono">Enter</kbd>{' '}
+                按{' '}
+                <kbd className="px-2 py-1 bg-gray-200 rounded text-sm font-mono">
+                  Enter
+                </kbd>{' '}
                 提交单词 • 不区分大小写 • 先保证准确率！
               </div>
             )}
@@ -595,20 +511,25 @@ const TypingPractice: React.FC = () => {
               </div>
             ) : (
               <div className="space-y-2">
-                {history.slice().reverse().map((item, index) => (
-                  <div
-                    key={index}
-                    className="p-3 rounded-lg flex justify-between items-center bg-green-50 border border-green-200"
-                  >
-                    <div className="flex items-center space-x-3">
-                      <span className="text-green-600">✓</span>
-                      <span className="text-gray-800 font-mono">{item.word}</span>
+                {history
+                  .slice()
+                  .reverse()
+                  .map((item, index) => (
+                    <div
+                      key={index}
+                      className="p-3 rounded-lg flex justify-between items-center bg-green-50 border border-green-200"
+                    >
+                      <div className="flex items-center space-x-3">
+                        <span className="text-green-600">✓</span>
+                        <span className="text-gray-800 font-mono">
+                          {item.word}
+                        </span>
+                      </div>
+                      <span className="text-gray-500 text-sm">
+                        {new Date(item.time).toLocaleTimeString()}
+                      </span>
                     </div>
-                    <span className="text-gray-500 text-sm">
-                      {new Date(item.time).toLocaleTimeString()}
-                    </span>
-                  </div>
-                ))}
+                  ))}
               </div>
             )}
           </div>
@@ -630,7 +551,7 @@ const TypingPractice: React.FC = () => {
             <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
               <div className="p-6">
                 <h2 className="text-2xl font-bold mb-4">创建自定义词汇集</h2>
-                
+
                 <div className="mb-4">
                   <label className="block text-sm font-semibold text-gray-700 mb-2">
                     词汇集名称
@@ -646,7 +567,10 @@ const TypingPractice: React.FC = () => {
 
                 <div className="mb-4">
                   <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    单词列表 <span className="text-xs text-gray-500">(每行一个或用逗号分隔)</span>
+                    单词列表{' '}
+                    <span className="text-xs text-gray-500">
+                      (每行一个或用逗号分隔)
+                    </span>
                   </label>
                   <textarea
                     value={newSetWords}
